@@ -38,4 +38,14 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapPost("/login", ([FromBody] LoginRequest login, IAuthService authService) => {
+        var response = authService.Auth(login);
+        if (response is null)
+            return Results.Unauthorized();
+        return Results.Ok(response);
+    });
+
+app.MapGet("/products", () => "Ok!").RequireAuthorization("user");
+app.MapGet("/users", () => "Ok!").RequireAuthorization("admin");
+
 app.Run();
